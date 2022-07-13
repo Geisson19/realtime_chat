@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'package:realtime_chat/models/user.dart';
+import 'package:realtime_chat/service/auth_service.dart';
 
 class UsersScreen extends StatefulWidget {
   const UsersScreen({Key? key}) : super(key: key);
@@ -38,16 +40,23 @@ class _UsersScreenState extends State<UsersScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final AuthService authService = Provider.of<AuthService>(context);
+    final currentUser = authService.user;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'user.name',
+        title: Text(
+          currentUser.name,
           style: TextStyle(color: Colors.black),
         ),
         elevation: 1,
         backgroundColor: Colors.white,
         leading: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            // Desconectar el socket server
+            Navigator.pushReplacementNamed(context, '/login');
+            AuthService.deleteToken();
+          },
           icon: const Icon(Icons.exit_to_app, color: Colors.black),
         ),
         actions: [
@@ -108,7 +117,7 @@ class _SingleUser extends StatelessWidget {
     return ListTile(
       title: Text(user.name),
       leading: CircleAvatar(child: Text(user.name.substring(0, 2))),
-      trailing: user.isOnline
+      trailing: user.isOnline!
           ? const Icon(
               Icons.circle_rounded,
               color: Colors.green,

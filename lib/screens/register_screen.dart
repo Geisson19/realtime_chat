@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:realtime_chat/helpers/show_alert.dart';
+import 'package:realtime_chat/service/auth_service.dart';
 import 'package:realtime_chat/widgets/widgets.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -43,10 +46,11 @@ class __FormState extends State<_Form> {
   final _passwordController = TextEditingController();
   final _emailController = TextEditingController();
   final _nameController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    final AuthService authService = Provider.of<AuthService>(context);
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 30),
       child: Column(
@@ -69,20 +73,26 @@ class __FormState extends State<_Form> {
             obscureText: true,
             controller: _passwordController,
           ),
-          const SizedBox(height: 20),
-          CustomInput(
-            icon: Icons.lock,
-            hintText: "Confirmar contraseña",
-            obscureText: true,
-            controller: _confirmPasswordController,
-          ),
           const SizedBox(height: 40),
           CustomButton(
-            onPressed: () {
-              // TODO Login with email and password
-            },
-            text: "Crear cuenta",
-          ),
+              onPressed: authService.isLoading
+                  ? null
+                  : () async {
+                      final bool signUpOk = await authService.signUp(
+                          _nameController.text,
+                          _emailController.text,
+                          _passwordController.text);
+
+                      if (signUpOk) {
+                        // ignore: use_build_context_synchronously
+                        Navigator.pushReplacementNamed(context, '/users');
+                      } else {
+                        // ignore: use_build_context_synchronously
+                        showAlert(context, "Registro inválido",
+                            AuthService.errorMessage);
+                      }
+                    },
+              text: authService.isLoading ? "Cargando..." : "Crear cuenta"),
           // ElevatedButton(onPressed: () {}, child: const Text("Login")),
         ],
       ),

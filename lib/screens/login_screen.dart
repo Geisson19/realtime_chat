@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:realtime_chat/helpers/show_alert.dart';
+import 'package:realtime_chat/service/services.dart';
 import 'package:realtime_chat/widgets/widgets.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -45,6 +48,8 @@ class __FormState extends State<_Form> {
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 30),
       child: Column(
@@ -63,13 +68,25 @@ class __FormState extends State<_Form> {
           ),
           const SizedBox(height: 40),
           CustomButton(
-            onPressed: () {
-              // TODO POST login to server
-              print("Login");
-              print(_emailController.text);
-              print(_passwordController.text);
-            },
-            text: "Ingresar",
+            onPressed: authService.isLoading
+                ? null
+                : () async {
+                    FocusScope.of(context).unfocus();
+
+                    bool loginOk = await authService.login(
+                        _emailController.text.trim(),
+                        _passwordController.text.trim());
+
+                    if (loginOk) {
+                      // ignore: use_build_context_synchronously
+                      Navigator.pushReplacementNamed(context, '/users');
+                    } else {
+                      // ignore: use_build_context_synchronously
+                      showAlert(context, "Login incorrecto",
+                          "Email o contraseña incorrectos");
+                    }
+                  },
+            text: authService.isLoading ? "Cargando..." : "Ingresar",
           ),
           // ElevatedButton(onPressed: () {}, child: const Text("Login")),
         ],

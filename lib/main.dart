@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:provider/provider.dart';
+
 import 'package:realtime_chat/routes/routes.dart';
+import 'package:realtime_chat/service/services.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,11 +18,16 @@ class ChatApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Chat App',
-      initialRoute: '/chat',
-      routes: appRoutes,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthService()),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Chat App',
+        initialRoute: '/loading',
+        routes: appRoutes,
+      ),
     );
   }
 }
