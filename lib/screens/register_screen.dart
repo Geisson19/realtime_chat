@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:realtime_chat/helpers/show_alert.dart';
-import 'package:realtime_chat/service/auth_service.dart';
+import 'package:realtime_chat/service/services.dart';
 import 'package:realtime_chat/widgets/widgets.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -50,6 +50,7 @@ class __FormState extends State<_Form> {
   @override
   Widget build(BuildContext context) {
     final AuthService authService = Provider.of<AuthService>(context);
+    final SocketService socketService = Provider.of<SocketService>(context);
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 30),
@@ -85,6 +86,7 @@ class __FormState extends State<_Form> {
 
                       if (signUpOk) {
                         // ignore: use_build_context_synchronously
+                        socketService.connect();
                         Navigator.pushReplacementNamed(context, '/users');
                       } else {
                         // ignore: use_build_context_synchronously

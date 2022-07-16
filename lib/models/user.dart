@@ -3,19 +3,20 @@ class User {
     required this.name,
     required this.email,
     required this.uid,
-    this.isOnline,
+    required this.isOnline,
   });
 
   String name;
   String email;
   String uid;
-  bool? isOnline = false;
+  bool isOnline = false;
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       name: json["name"],
       email: json["email"],
       uid: json["uid"],
+      isOnline: json["isOnline"],
     );
   }
 
@@ -24,6 +25,7 @@ class User {
       "name": name,
       "email": email,
       "uid": uid,
+      "isOnline": isOnline,
     };
   }
 }

@@ -49,6 +49,7 @@ class __FormState extends State<_Form> {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context);
+    final socketService = Provider.of<SocketService>(context);
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 30),
@@ -78,6 +79,7 @@ class __FormState extends State<_Form> {
                         _passwordController.text.trim());
 
                     if (loginOk) {
+                      socketService.connect();
                       // ignore: use_build_context_synchronously
                       Navigator.pushReplacementNamed(context, '/users');
                     } else {
