@@ -114,7 +114,7 @@ class _SingleUser extends StatelessWidget {
     return ListTile(
       title: Text(user.name),
       leading: CircleAvatar(child: Text(user.name.substring(0, 2))),
-      trailing: user.isOnline!
+      trailing: user.isOnline
           ? const Icon(
               Icons.circle_rounded,
               color: Colors.green,
@@ -125,7 +125,12 @@ class _SingleUser extends StatelessWidget {
               color: Colors.red,
               size: 15,
             ),
-      onTap: () {},
+      onTap: () {
+        final ChatService chatService =
+            Provider.of<ChatService>(context, listen: false);
+        chatService.userTo = user;
+        Navigator.pushNamed(context, '/chat');
+      },
     );
   }
 }
